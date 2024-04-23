@@ -1,0 +1,10 @@
+ try {
+        const response = await fetch("http://localhost:8080/restaurantes/");
+        console.log(response);
+        const data = await response.json();
+        console.log(data);
+        setRestaurantes(data);
+      } catch (error) {
+        console.error("Error fetching restaurantes:", error);
+      }
+    };

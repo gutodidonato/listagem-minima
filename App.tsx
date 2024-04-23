@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, FlatList } from "react-native";
 import Constants from "expo-constants";
+import axios from "axios";
 
 export default function App() {
+  const api = axios.create({
+    baseURL: "http://localhost:8080",
+  });
   const [restaurantes, setRestaurantes] = useState([]);
 
   useEffect(() => {
-    const fetchRestaurantes = async () => {
+    async function fetchRestaurantes() {
       try {
-        const response = await fetch("http://localhost:8080/restaurantes/");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
+        const response = await api.get("/restaurantes/");
+        console.log(response);
+        const data = response.data;
+        console.log(data);
         setRestaurantes(data);
       } catch (error) {
         console.error("Error fetching restaurantes:", error);
       }
-    };
+    }
 
     fetchRestaurantes();
   }, []);
@@ -33,7 +36,6 @@ export default function App() {
             <Text style={styles.restauranteTexto}>Status: {item.status}</Text>
           </View>
         )}
-        keyExtractor={(item) => item.nome || Math.random().toString()} // Use a unique identifier
       />
     </View>
   );
