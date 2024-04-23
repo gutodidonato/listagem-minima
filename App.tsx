@@ -7,7 +7,7 @@ export default function App() {
 
   const makeAPICall = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8080/restaurantes/", {
+      const response = await fetch("http://192.168.0.83:8080/restaurantes", {
         mode: "cors", // Remove this if CORS is configured correctly on your server
       });
       const data = await response.json();
