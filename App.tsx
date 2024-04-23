@@ -1,41 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, FlatList } from "react-native";
 import Constants from "expo-constants";
-import axios from "axios";
 
 export default function App() {
-  const api = axios.create({
-    baseURL: "http://localhost:8080",
-  });
   const [restaurantes, setRestaurantes] = useState([]);
 
-  useEffect(() => {
-    async function fetchRestaurantes() {
-      try {
-        const response = await api.get("/restaurantes/");
-        console.log(response);
-        const data = response.data;
-        console.log(data);
-        setRestaurantes(data);
-      } catch (error) {
-        console.error("Error fetching restaurantes:", error);
-      }
+  const makeAPICall = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8080/restaurantes/", {
+        mode: "cors", // Remove this if CORS is configured correctly on your server
+      });
+      const data = await response.json();
+      console.log({ data });
+      setRestaurantes(data); // Update state with fetched data
+    } catch (e) {
+      console.error("Error fetching restaurantes:", e);
     }
+  };
 
-    fetchRestaurantes();
+  useEffect(() => {
+    makeAPICall();
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.paragraph}>Lista de Restaurantes</Text>
       <FlatList
-        data={restaurantes}
+        data={restaurantes} // Use the fetched restaurants data
         renderItem={({ item }) => (
           <View style={styles.restaurante}>
             <Text style={styles.restauranteTexto}>Nome: {item.nome}</Text>
             <Text style={styles.restauranteTexto}>Status: {item.status}</Text>
           </View>
         )}
+        keyExtractor={(item) => item.nome} // Use a unique identifier for each item
       />
     </View>
   );
